@@ -37,6 +37,8 @@ STATE light_state[STATE_COUNT][LIGHT_NUM] =
 int main(void)
 {
 	//초기화
+
+
     ULONGLONG last_tick = GetTickCount64();
     state_t cur_state = S0;
     state_t last_state = S0;
