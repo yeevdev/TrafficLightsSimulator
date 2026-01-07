@@ -29,9 +29,3 @@ void print_light(const Light* light) {
 void change_light(Light* light, const STATE* state) {
     light->state = *state;
 }
-
-int main() {
-    printf("[test]\n");
-    Light light = { 0, "basic", GO_ST };
-    print_light(&light);
-}
