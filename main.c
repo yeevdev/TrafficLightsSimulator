@@ -58,6 +58,7 @@ int main(void) {
     char input = 0;
     bool emergency_flag = false;
     bool blink_flag = false;
+
     //루프
     while (1)
     {
@@ -98,59 +99,53 @@ int main(void) {
             }
         }
 
-        // 2. 시간 비교 (현재시간 - 마지막변경시간 >= 대기시간)
-        if (current_tick - last_tick >= wait_time && !emergency_flag)
+        if(current_tick - last_tick >= wait_time)
         {
-            // 기준 시간(last_tick)을 현재로 갱신 (타이머 리셋 효과)
-            last_tick = current_tick;
-
-            // set cur state
-            if (cur_state == S0)      wait_time = 600;
-            else if (cur_state == S1) wait_time = 6000;
-            else if (cur_state == S2) wait_time = 600;
-            else if (cur_state == S3) wait_time = 4000;
-            else if (cur_state == S4) wait_time = 600;
-            else if (cur_state == S5) wait_time = 6000;
-            else if (cur_state == S6) wait_time = 600;
-            else if (cur_state == S7) wait_time = 4000;
-            cur_state = (cur_state + 1) % STATE_COUNT; // S1 -> S7 순회
-
-            set_light_state(&ints, cur_state);
-            refresh_intersection(&ints);
-        }
-
-        if (emergency_flag && current_tick - last_tick >= wait_time)
-        {
-            last_tick = current_tick;
-            switch (cur_state)
+            // 2. 시간 비교 (현재시간 - 마지막변경시간 >= 대기시간)
+            if (!emergency_flag)
             {
-            case S8:
-                // [호출]
+                // 기준 시간(last_tick)을 현재로 갱신 (타이머 리셋 효과)
+                last_tick = current_tick;
+
+                // set cur state
+                if (cur_state == S0)      wait_time = 600;
+                else if (cur_state == S1) wait_time = 6000;
+                else if (cur_state == S2) wait_time = 600;
+                else if (cur_state == S3) wait_time = 4000;
+                else if (cur_state == S4) wait_time = 600;
+                else if (cur_state == S5) wait_time = 6000;
+                else if (cur_state == S6) wait_time = 600;
+                else if (cur_state == S7) wait_time = 4000;
+                cur_state = (cur_state + 1) % STATE_COUNT; // S1 -> S7 순회
+
+                set_light_state(&ints, cur_state);
+                refresh_intersection(&ints);
+            }
+            else
+            {
+                last_tick = current_tick;
                 set_light_state(&ints, cur_state);
                 refresh_intersection(&ints);
 
-                if (!blink_flag)
-                    cur_state = S9;
-                else
-                    cur_state = S10;
-                wait_time = 600; //6s        
-                break;
-            case S9:
-                wait_time = 1000000000;// 무한대기
-                // [호출]
-                set_light_state(&ints, cur_state);
-                refresh_intersection(&ints);
-                break;
-
-            case S10:
-                set_light_state(&ints, cur_state);
-                refresh_intersection(&ints);
-                cur_state = S8;
-                wait_time = 600;
-                break;
+                switch (cur_state)
+                {
+                case S8:
+                    if (!blink_flag)
+                        cur_state = S9;
+                    else
+                        cur_state = S10;
+                    wait_time = 600; //6s        
+                    break;
+                case S9:
+                    wait_time = 1000000000;// 무한대기
+                    break;
+                case S10:
+                    cur_state = S8;
+                    wait_time = 600;
+                    break;
+                }
             }
         }
-
     }
     return 0;
 }
