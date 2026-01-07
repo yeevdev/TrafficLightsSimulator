@@ -1,26 +1,4 @@
-﻿#include <stdio.h>
-
-typedef enum {
-    GO_ST = 1, // green
-    WAIT,      // yelow
-    STOP,      // red
-    GO_LEFT    // arrow
-} STATE;
-const char st_chr[5][30] = { // state to string function
-    "",
-    " ● ● ← \033[32m ● \033[0m",
-    " ● \033[33m ● \033[0m ← ●",
-    "\033[31m ● \033[0m ● ← ●",
-    " ● ● \033[32m ← \033[0m ●"
-};
-
-// main light struct
-typedef struct {
-    int id;
-    char name[10];
-    STATE state;
-
-} Light;
+﻿#include "light.h"
 
 void print_light(const Light* light) {
     printf("[%d] %s - [%s]", light->id, light->name, st_chr[light->state]);
