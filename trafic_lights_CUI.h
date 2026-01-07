@@ -2,7 +2,7 @@
 #define __TRAFFIC_LIGHTS_CUI_H__
 
 #include <stdio.h>
-#include "light.c"
+#include "light.h"
 
 
 // 현재 화면을 클리어하는 함수
