@@ -19,20 +19,28 @@ typedef enum
 
 
 
-//각 상태에 맞는 신호등 상태
-STATE light_state[STATE_COUNT][LIGHT_NUM] =
+//각 상태에 맞는 4차선 신호등 상태
+LightState light_state[STATE_COUNT][LIGHT_NUM] =
 {
-    //    A        B        C         D
-       { GO_LEFT, STOP,    GO_LEFT, STOP    },
-       { WAIT,    STOP,    WAIT,    STOP    },
-       { GO_ST,   STOP,    GO_ST,   STOP    },
-       { WAIT,    STOP,    WAIT,    STOP    },
-       { STOP,    GO_LEFT, STOP,    GO_LEFT },
-       { STOP,    WAIT,    STOP,    WAIT    },
-       { STOP,    GO_ST,   STOP,    GO_ST   },
-       { STOP,    WAIT,    STOP,    WAIT    }
+	//  A      B       C       D
+    { LEFT,   RED,    LEFT,   RED    },
+    { YELLOW, RED,    YELLOW, RED    },
+    { GREEN,  RED,    GREEN,  RED    },
+    { YELLOW, RED,    YELLOW, RED    },
+    { RED,    LEFT,   RED,    LEFT   },
+    { RED,    YELLOW, RED,    YELLOW },
+    { RED,    GREEN,  RED,    GREEN  },
+    { RED,    YELLOW, RED,    YELLOW }
 };
 
+//4차선 신호 변경
+void set_light_state(Intersection *ints, state_t state)
+{
+	ints->north.state = light_state[state][0];
+	ints->west.state = light_state[state][1];
+	ints->south.state = light_state[state][2];
+	ints->east.state = light_state[state][3];
+}
 
 int main(void)
 {
@@ -41,21 +49,23 @@ int main(void)
 
     ULONGLONG last_tick = GetTickCount64();
     state_t cur_state = S0;
-    state_t last_state = S0;
+    
     unsigned long long wait_time = 4000;
+    Intersection ints;
+    set_light_state(&ints, cur_state);
+    refresh_intersection(&ints);
+
+
+    //키 입력을 위한 부분
+    state_t last_state = S0;
     char input = 0;
-    printf("0");
+
+    
 	//루프
 	while (1)
 	{
         ULONGLONG current_tick = GetTickCount64();
-        
-        
-        //키 입력에 따라 state를 바꾸고 기존 state를 저장
-        //키를 다시 누르면 해제
-        //state가 너무 많다 싶으면 비상 state를 따로 만들어서 else if
 
-        
         // 2. 시간 비교 (현재시간 - 마지막변경시간 >= 대기시간)
         if (current_tick - last_tick >= wait_time)
         {
@@ -68,57 +78,73 @@ int main(void)
             case S0:
                 cur_state = S1;
                 wait_time = 600; // 6s
-                printf("1");
+                
                 // [호출]
+                set_light_state(&ints, cur_state);
+                refresh_intersection(&ints);
                 break;
 
             case S1:
                 cur_state = S2;
                 wait_time = 6000; // 60s
-                printf("2");
+                
                 // [호출]
+                set_light_state(&ints, cur_state);
+                refresh_intersection(&ints);
                 break;
 
             case S2:
                 cur_state = S3;
                 wait_time = 600; // 6s
-                printf("3");
+                
                 // [호출]
+                set_light_state(&ints, cur_state);
+                refresh_intersection(&ints);
                 break;
 
             case S3:
                 cur_state = S4;
                 wait_time = 4000; // 40s
-                printf("4");
+                
                 // [호출]
+                set_light_state(&ints, cur_state);
+                refresh_intersection(&ints);
                 break;
 
             case S4:
                 cur_state = S5;
                 wait_time = 600; // 6s
-                printf("5");
+                
                 // [호출]
+                set_light_state(&ints, cur_state);
+                refresh_intersection(&ints);
                 break;
 
             case S5:
                 cur_state = S6;
                 wait_time = 6000; // 60s
-                printf("6");
+                
                 // [호출]
+                set_light_state(&ints, cur_state);
+                refresh_intersection(&ints);
                 break;
 
             case S6:
                 cur_state = S7;
                 wait_time = 600; // 6s
-                printf("7");
+                
                 // [호출]
+                set_light_state(&ints, cur_state);
+                refresh_intersection(&ints);
                 break;
 
             case S7:
                 cur_state = S0;
                 wait_time = 4000; // 40s (처음 S0 시간으로 돌아감)
-                printf("0");
+                
                 // [호출]
+                set_light_state(&ints, cur_state);
+                refresh_intersection(&ints);
                 break;
             }
         }
