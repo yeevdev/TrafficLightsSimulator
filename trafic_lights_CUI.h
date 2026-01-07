@@ -1,14 +1,23 @@
-﻿#ifndef __TRAFFIC_LIGHTS_CUI_H__
-#define __TRAFFIC_LIGHTS_CUI_H__
+﻿#ifndef __TRAFIC_LIGHTS_CUI_H__
+#define __TRAFIC_LIGHTS_CUI_H__
 
-#include <stdio.h>
 #include "light.h"
 
+#define RED_LIGHT "\033[31m●\033[0m"
+#define YELLOW_LIGHT "\033[33m●\033[0m"
+#define GREEN_LIGHT "\033[32m●\033[0m"
+#define GREEN_ARROW "\033[32m←\033[0m"
+#define OFF_LIGHT     "\033[90m○\033[0m"
 
-// 현재 화면을 클리어하는 함수
-void clear_CUI();
+// [RED][YELLOW][GREEN][LEFT]
+#define SIGNAL_RED		RED_LIGHT    " " OFF_LIGHT   " " OFF_LIGHT   " " OFF_LIGHT
+#define SIGNAL_YELLOW	OFF_LIGHT    " " YELLOW_LIGHT" " OFF_LIGHT   " " OFF_LIGHT
+#define SIGNAL_GREEN	OFF_LIGHT    " " OFF_LIGHT   " " OFF_LIGHT	" " GREEN_LIGHT
+#define SIGNAL_LEFT		OFF_LIGHT    " " OFF_LIGHT	" " GREEN_ARROW	" " OFF_LIGHT
 
-// 신호등의 상태를 참조해서 문자열으로 반환하는 함수
+
+void clear_CUI(void);
 const char* get_light_state_str(Light* light);
+void display_intersection(Intersection* intersection);
 
-#endif
+#endif // !__TRAFIC_LIGHTS_CUI_H__

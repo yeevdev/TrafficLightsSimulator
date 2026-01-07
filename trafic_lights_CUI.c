@@ -1,24 +1,58 @@
 ﻿#include "trafic_lights_CUI.h"
+#include <stdio.h>
 
-// 현재 화면을 클리어하는 함수
-void clear_CUI() {
-	for(int i = 0; i < 100; i++) {
-		printf("\n\r");
-	}
+
+void clear_CUI(void) {
+    printf("\033[2J\033[H");
 }
 
 const char* get_light_state_str(Light* light) {
-	switch(light->state) {
-		case GO_LEFT:
-			return "\033[32m←\033[0m\n";
-		case WAIT:
-			return "\033[33m●\033[0m\n";
-		case STOP:
-			return "\033[31m●\033[0m\n";
-		case GO_ST:
-			return "\033[32m●\033[0m\n";
-		default:
-			return "NONE";
-	}
+    switch(light->state) {
+    case RED:
+        return SIGNAL_RED;
+    case YELLOW:
+        return SIGNAL_YELLOW;
+    case GREEN:
+        return SIGNAL_GREEN;
+    case LEFT:
+        return SIGNAL_LEFT;
+    default:
+        break;
+    }
+}
+
+void display_intersection(Intersection* intersection) {
+    printf("                 |             |\n");
+    printf("                 |             |\n");
+    printf("                 |             |\n");
+    printf("                 |             |\n");
+    printf("                 |   %-8s   |\n", get_light_state_str(&(intersection->north)));
+    printf("                 |             |\n");
+    printf("_________________|             |_________________\n");
+    printf("                                                 \n");
+    printf("                                                 \n");
+    printf("                                                 \n");
+
+    // 좌우 도로 (West, East)
+    printf("    %-8s                         %-8s\n",
+        get_light_state_str(&(intersection->west)),
+        get_light_state_str(&(intersection->east)));
+
+    printf("                                                 \n");
+    printf("                                                 \n");
+
+    printf("_________________               _________________\n");
+    printf("                 |             |\n");
+    printf("                 |             |\n");
+    printf("                 |   %-8s   |\n", get_light_state_str(&(intersection->south)));
+    printf("                 |             |\n");
+    printf("                 |             |\n");
+    printf("                 |             |\n");
+    printf("                 |             |\n");
+}
+
+void refresh_intersection(Intersection* intersection) {
+    clear_CUI();
+    display_intersection(intersection);
 }
 
