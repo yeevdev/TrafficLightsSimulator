@@ -1,7 +1,7 @@
 ﻿#include <stdio.h>
 #include <windows.h>
 
-
+#define LIGHT_NUM 4
 //상태가 n개
 typedef enum
 {
@@ -12,10 +12,15 @@ typedef enum
 	S4,
 	S5,
 	S6,
-	S7
+	S7,
+    STATE_COUNT
 }state_t;
 
 //각 상태에 맞는 신호등 상태
+int light_state[STATE_COUNT][LIGHT_NUM] =
+{
+    {}
+}
 
 
 int main(void)
@@ -23,13 +28,20 @@ int main(void)
 	//초기화
     ULONGLONG last_tick = GetTickCount64();
     state_t cur_state = S0;
+    state_t last_state = S0;
     unsigned long long wait_time = 4000;
+    int input = 0;
     printf("0");
 	//루프
 	while (1)
 	{
         ULONGLONG current_tick = GetTickCount64();
-		
+        
+        
+        //키 입력에 따라 state를 바꾸고 기존 state를 저장
+        //키를 다시 누르면 해제
+        //state가 너무 많다 싶으면 비상 state를 따로 만들어서 else if
+
         
         // 2. 시간 비교 (현재시간 - 마지막변경시간 >= 대기시간)
         if (current_tick - last_tick >= wait_time)
