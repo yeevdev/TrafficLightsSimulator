@@ -1,11 +1,12 @@
 ﻿#include <stdio.h>
 #include <windows.h>
+#include "light.h"
 
 #define LIGHT_NUM 4
 //상태가 n개
 typedef enum
 {
-	S0,
+	S0 = 0,
 	S1,
 	S2,
 	S3,
@@ -16,11 +17,21 @@ typedef enum
     STATE_COUNT
 }state_t;
 
+
+
 //각 상태에 맞는 신호등 상태
-int light_state[STATE_COUNT][LIGHT_NUM] =
+STATE light_state[STATE_COUNT][LIGHT_NUM] =
 {
-    {}
-}
+    //    A        B        C         D
+       { GO_LEFT, STOP,    GO_LEFT, STOP    },
+       { WAIT,    STOP,    WAIT,    STOP    },
+       { GO_ST,   STOP,    GO_ST,   STOP    },
+       { WAIT,    STOP,    WAIT,    STOP    },
+       { STOP,    GO_LEFT, STOP,    GO_LEFT },
+       { STOP,    WAIT,    STOP,    WAIT    },
+       { STOP,    GO_ST,   STOP,    GO_ST   },
+       { STOP,    WAIT,    STOP,    WAIT    }
+};
 
 
 int main(void)
@@ -30,7 +41,7 @@ int main(void)
     state_t cur_state = S0;
     state_t last_state = S0;
     unsigned long long wait_time = 4000;
-    int input = 0;
+    char input = 0;
     printf("0");
 	//루프
 	while (1)
