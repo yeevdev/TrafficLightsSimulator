@@ -17,7 +17,9 @@ enum state_t {
 int main(void) {
 	Light light = { 1, "test", GO_ST };
 	print_light(&light);
+	change_light(&light, WAIT); print_light(&light);
+	change_light(&light, STOP); print_light(&light);
+	change_light(&light, GO_LEFT); print_light(&light);
 	
 	return 0;
 }
-

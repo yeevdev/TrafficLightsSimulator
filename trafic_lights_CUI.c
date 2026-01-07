@@ -17,6 +17,8 @@ const char* get_light_state_str(Light* light) {
 			return "\033[31m●\033[0m\n";
 		case GO_ST:
 			return "\033[32m●\033[0m\n";
+		default:
+			return "NONE";
 	}
 }
 

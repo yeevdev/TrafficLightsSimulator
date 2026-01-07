@@ -21,6 +21,6 @@ typedef struct {
 } Light;
 
 void print_light(const Light* light); // print light state
-void change_light(Light* light, const STATE* state); // change light state
+void change_light(Light* light, STATE state); // change light state
 
 #endif
