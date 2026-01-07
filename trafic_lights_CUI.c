@@ -27,7 +27,7 @@ void display_intersection(Intersection* intersection) {
     printf("                 │             │\n");
     printf("                 │             │\n");
     printf("                 │   %-8s   │\n", get_light_state_str(&(intersection->north)));
-    printf("                 │             │\n");
+    printf("                 │ ■ ■ ■ ■ ■ ■ │\n");
     printf("─────────────────┘             └─────────────────\n");
     printf("                                                 \n");
     printf("                                                 \n");
@@ -43,7 +43,7 @@ void display_intersection(Intersection* intersection) {
     printf("                                                 \n");
 
     printf("─────────────────┐             ┌─────────────────\n");
-    printf("                 │             │\n");
+    printf("                 │ ■ ■ ■ ■ ■ ■ │\n");
     printf("                 │             │\n");
     printf("                 │   %-8s   │\n", get_light_state_str(&(intersection->south)));
     printf("                 │             │\n");
