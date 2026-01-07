@@ -6,8 +6,7 @@
 #define LIGHT_NUM 4
 
 //상태가 n개
-typedef enum
-{
+typedef enum {
 	S0 = 0,
 	S1,
 	S2,
@@ -19,11 +18,10 @@ typedef enum
     S8,//여기부턴 키입력에 의한 state
     S9,
     STATE_COUNT
-}state_t;
+} state_t;
 
 //각 상태에 맞는 4차선 신호등 상태
-LightState light_state[STATE_COUNT][LIGHT_NUM] =
-{
+LightState light_state[STATE_COUNT][LIGHT_NUM] = {
 	//  A      B       C       D
     { LEFT,   RED,    LEFT,   RED    },
     { YELLOW, RED,    YELLOW, RED    },
@@ -38,16 +36,14 @@ LightState light_state[STATE_COUNT][LIGHT_NUM] =
 };
 
 //4차선 신호 변경
-void set_light_state(Intersection *ints, state_t state)
-{
+void set_light_state(Intersection *ints, state_t state) {
 	ints->north.state = light_state[state][0];
 	ints->west.state = light_state[state][1];
 	ints->south.state = light_state[state][2];
 	ints->east.state = light_state[state][3];
 }
 
-int main(void)
-{
+int main(void) {
 	//초기화
     ULONGLONG last_tick = GetTickCount64();
     state_t cur_state = S0;
