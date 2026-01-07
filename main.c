@@ -17,6 +17,7 @@ typedef enum {
 	S7,
     S8,//여기부턴 키입력에 의한 state
     S9,
+    S10,
     STATE_COUNT
 } state_t;
 
@@ -32,7 +33,8 @@ LightState light_state[STATE_COUNT][LIGHT_NUM] = {
     { RED,    GREEN,  RED,    GREEN  },
     { RED,    YELLOW, RED,    YELLOW },
     { YELLOW, YELLOW, YELLOW, YELLOW },
-	{ RED,    RED,    RED,    RED    }
+	{ RED,    RED,    RED,    RED    },
+	{ OFF,    OFF,    OFF,    OFF    }
 };
 
 //4차선 신호 변경
@@ -57,14 +59,10 @@ int main(void) {
     state_t last_state = S0;
     char input = 0;
 
-    //키 입력에 따라 state를 바꾸고 기존 state를 저장 
-    //키를 다시 누르면 해제 
-    //state가 너무 많다 싶으면 비상 state를 따로 만들어서 else if
-    
 	//루프
 	while (1)
 	{
-		bool flag = false;
+		bool emergency_flag = false;
         ULONGLONG current_tick = GetTickCount64();
         if (_kbhit()) 
             input = _getch();
@@ -75,7 +73,7 @@ int main(void) {
             {
             case 'b': //비상, 전체 RED 점멸 
                 cur_state = S8;     
-                flag = true;
+                emergency_flag = true;
                 input = 0;
                 break;
              
@@ -89,94 +87,27 @@ int main(void) {
 
 
         // 2. 시간 비교 (현재시간 - 마지막변경시간 >= 대기시간)
-        if (current_tick - last_tick >= wait_time || flag)
+        if (current_tick - last_tick >= wait_time || emergency_flag)
         {
             // 기준 시간(last_tick)을 현재로 갱신 (타이머 리셋 효과)
             last_tick = current_tick;
 
-            // 상태 전이 로직
-            switch (cur_state)
+            
+            // set cur state
+            if (cur_state == S0)      wait_time = 600;
+            else if (cur_state == S1) wait_time = 6000;
+            else if (cur_state == S2) wait_time = 600;
+            else if (cur_state == S3) wait_time = 4000;
+            else if (cur_state == S4) wait_time = 600;
+            else if (cur_state == S5) wait_time = 6000;
+            else if (cur_state == S6) wait_time = 600;
+            else if (cur_state == S7) wait_time = 4000;
+            cur_state = (cur_state + 1) % STATE_COUNT; // S1 -> S7 순회
+            set_light_state(&ints, cur_state);
+            refresh_intersection(&ints);
+
+            switch(cur_state)
             {
-            case S0:
-                last_state = cur_state;
-                cur_state = S1;
-                wait_time = 600; // 6s
-                
-                // [호출]
-                set_light_state(&ints, cur_state);
-                refresh_intersection(&ints);
-                break;
-
-            case S1:
-                last_state = cur_state;
-                cur_state = S2;
-                wait_time = 6000; // 60s
-                
-                // [호출]
-                set_light_state(&ints, cur_state);
-                refresh_intersection(&ints);
-                break;
-
-            case S2:
-                last_state = cur_state;
-                cur_state = S3;
-                wait_time = 600; // 6s
-                
-                // [호출]
-                set_light_state(&ints, cur_state);
-                refresh_intersection(&ints);
-                break;
-
-            case S3:
-                last_state = cur_state;
-                cur_state = S4;
-                wait_time = 4000; // 40s
-                
-                // [호출]
-                set_light_state(&ints, cur_state);
-                refresh_intersection(&ints);
-                break;
-
-            case S4:
-                last_state = cur_state;
-                cur_state = S5;
-                wait_time = 600; // 6s
-                
-                // [호출]
-                set_light_state(&ints, cur_state);
-                refresh_intersection(&ints);
-                break;
-
-            case S5:
-                last_state = cur_state;
-                cur_state = S6;
-                wait_time = 6000; // 60s
-                
-                // [호출]
-                set_light_state(&ints, cur_state);
-                refresh_intersection(&ints);
-                break;
-
-            case S6:
-                last_state = cur_state;
-                cur_state = S7;
-                wait_time = 600; // 6s
-                
-                // [호출]
-                set_light_state(&ints, cur_state);
-                refresh_intersection(&ints);
-                break;
-
-            case S7:
-                last_state = cur_state;
-                cur_state = S0;
-                wait_time = 4000; // 40s (처음 S0 시간으로 돌아감)
-                
-                // [호출]
-                set_light_state(&ints, cur_state);
-                refresh_intersection(&ints);
-                break;
-
             //예외 케이스
             case S8:
                 // [호출]
