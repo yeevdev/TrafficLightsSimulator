@@ -16,6 +16,8 @@
             return SIGNAL_GREEN;
         case LEFT:
             return SIGNAL_LEFT;
+        case OFF:
+            return SIGNAL_OFF;
         default:
             break;
         }
