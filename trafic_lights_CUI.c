@@ -21,35 +21,42 @@ const char* get_light_state_str(Light* light) {
     }
 }
 
-void display_intersection(Intersection* intersection) {
-    printf("                 │             │\n");
-    printf("                 │             │\n");
-    printf("                 │             │\n");
-    printf("                 │             │\n");
-    printf("                 │   %-8s   │\n", get_light_state_str(&(intersection->north)));
-    printf("                 │ ■ ■ ■ ■ ■ ■ │\n");
-    printf("─────────────────┘             └─────────────────\n");
-    printf("                                                 \n");
-    printf("                                                 \n");
-    printf("                                                 \n");
+void display_intersection(Intersection* intersection)
+{
+    const char* N = get_light_state_str(&intersection->north);
+    const char* S = get_light_state_str(&intersection->south);
+    const char* W = get_light_state_str(&intersection->west);
+    const char* E = get_light_state_str(&intersection->east);
 
-    // 좌우 도로 (West, East)
-    printf("    %-8s                         %-8s\n",
-        get_light_state_str(&(intersection->west)),
-        get_light_state_str(&(intersection->east)));
+    printf("\n");
+    printf("                       │               │\n");
+    printf("                       │               │\n");
+    printf("                       │               │\n");
+    printf("                       │               │\n");
+    printf("                       │===============│\n");
+    printf("                       │===============│\n");
+    printf("                       │    %s    │\n", N);
+    printf("───────────────────────┘               └───────────────────────\n");
 
-    printf("                                                 \n");
-    printf("                                                 \n");
-    printf("                                                 \n");
+    // 가운데 (너 간격 그대로)
+    printf("                 ││ ││                   ││ ││                       \n");
+    printf("                 ││ ││                   ││ ││                       \n");
+    printf("                 ││ ││                   ││ ││                       \n");
+    printf("                %s                 %s                          \n", W, E);
+    printf("                 ││ ││                   ││ ││                       \n");
+    printf("                 ││ ││                   ││ ││                       \n");
+    printf("                 ││ ││                   ││ ││                       \n");
+    printf("───────────────────────┐               ┌───────────────────────\n");
+    printf("                       │    %s    │\n", S);
+    printf("                       │===============│\n");
+    printf("                       │===============│\n");
+    printf("                       │               │\n");
+    printf("                       │               │\n");
+    printf("                       │               │\n");
+    printf("                       │               │\n");
+    printf("                       │               │\n");
 
-    printf("─────────────────┐             ┌─────────────────\n");
-    printf("                 │ ■ ■ ■ ■ ■ ■ │\n");
-    printf("                 │             │\n");
-    printf("                 │   %-8s   │\n", get_light_state_str(&(intersection->south)));
-    printf("                 │             │\n");
-    printf("                 │             │\n");
-    printf("                 │             │\n");
-    printf("                 │             │\n");
+    printf("\n");
 }
 
 void refresh_intersection(Intersection* intersection) {
