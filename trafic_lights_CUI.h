@@ -20,5 +20,6 @@
 void clear_CUI(void);
 const char* get_light_state_str(Light* light);
 void display_intersection(Intersection* intersection);
+void refresh_intersection(Intersection* intersection);
 
 #endif // !__TRAFIC_LIGHTS_CUI_H__

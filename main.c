@@ -4,7 +4,7 @@
 #include "light.h"
 
 #define LIGHT_NUM 4
-
+#define STATE_COUNT 8
 //상태가 n개
 typedef enum {
 	S0 = 0,
@@ -18,11 +18,10 @@ typedef enum {
     S8,//여기부턴 키입력에 의한 state
     S9,
     S10,
-    STATE_COUNT
 } state_t;
 
 //각 상태에 맞는 4차선 신호등 상태
-LightState light_state[STATE_COUNT][LIGHT_NUM] = {
+LightState light_state[STATE_COUNT + 3][LIGHT_NUM] = {
 	//  A      B       C       D
     { LEFT,   RED,    LEFT,   RED    },
     { YELLOW, RED,    YELLOW, RED    },
@@ -55,14 +54,13 @@ int main(void) {
     set_light_state(&ints, cur_state);
     refresh_intersection(&ints);
 
-    //키 입력을 위한 부분
     state_t last_state = S0;
     char input = 0;
+    bool emergency_flag = false;
 
 	//루프
 	while (1)
 	{
-		bool emergency_flag = false;
         ULONGLONG current_tick = GetTickCount64();
         if (_kbhit()) 
             input = _getch();
@@ -72,12 +70,16 @@ int main(void) {
             switch (input)
             {
             case 'b': //비상, 전체 RED 점멸 
+                if (!cur_state)  cur_state++;
+                last_state = cur_state -1;
                 cur_state = S8;     
-                emergency_flag = true;
+                emergency_flag = true;        
+                wait_time = 0;
                 input = 0;
                 break;
              
             case 's': //끝
+                emergency_flag = false;
 				cur_state = last_state;
                 wait_time = 0;
                 input = 0;
@@ -85,14 +87,12 @@ int main(void) {
             }
         }
 
-
         // 2. 시간 비교 (현재시간 - 마지막변경시간 >= 대기시간)
-        if (current_tick - last_tick >= wait_time || emergency_flag)
+        if (current_tick - last_tick >= wait_time && !emergency_flag)
         {
             // 기준 시간(last_tick)을 현재로 갱신 (타이머 리셋 효과)
             last_tick = current_tick;
 
-            
             // set cur state
             if (cur_state == S0)      wait_time = 600;
             else if (cur_state == S1) wait_time = 6000;
@@ -103,12 +103,15 @@ int main(void) {
             else if (cur_state == S6) wait_time = 600;
             else if (cur_state == S7) wait_time = 4000;
             cur_state = (cur_state + 1) % STATE_COUNT; // S1 -> S7 순회
+
             set_light_state(&ints, cur_state);
             refresh_intersection(&ints);
+        }
 
-            switch(cur_state)
+        if(emergency_flag && current_tick - last_tick >= wait_time)
+        {
+            switch (cur_state)
             {
-            //예외 케이스
             case S8:
                 // [호출]
                 set_light_state(&ints, cur_state);
@@ -117,7 +120,6 @@ int main(void) {
                 cur_state = S9;
                 wait_time = 600; //6s           
                 break;
-
             case S9:
                 wait_time = 1000000000;// 무한대기
                 // [호출]
@@ -126,6 +128,7 @@ int main(void) {
                 break;
             }
         }
+        
 	}
 	return 0;
 }
