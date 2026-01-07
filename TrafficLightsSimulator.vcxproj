@@ -127,7 +127,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="light.c" />
     <ClCompile Include="main.c" />
+    <ClCompile Include="trafic_lights_CUI.c" />
+    <ClCompile Include="trafic_lights_CUI.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

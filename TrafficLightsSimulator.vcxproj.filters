@@ -18,5 +18,14 @@
     <ClCompile Include="main.c">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="trafic_lights_CUI.h">
+      <Filter>헤더 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="trafic_lights_CUI.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="light.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
