@@ -15,7 +15,7 @@ typedef enum
 	S6,
 	S7,
     STATE_COUNT
-}state_t;
+} state_t;
 
 
 
