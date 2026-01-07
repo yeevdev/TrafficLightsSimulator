@@ -5,7 +5,8 @@ typedef enum _LightState {
 	RED,
 	YELLOW,
 	GREEN,
-	LEFT
+	LEFT,
+	OFF
 } LightState;
 
 typedef struct _Light {
