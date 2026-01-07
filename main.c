@@ -7,14 +7,14 @@
 #define STATE_COUNT 8
 //상태가 n개
 typedef enum {
-	S0 = 0,
-	S1,
-	S2,
-	S3,
-	S4,
-	S5,
-	S6,
-	S7,
+    S0 = 0,
+    S1,
+    S2,
+    S3,
+    S4,
+    S5,
+    S6,
+    S7,
     S8,//여기부턴 키입력에 의한 state
     S9,
     S10,
@@ -22,7 +22,7 @@ typedef enum {
 
 //각 상태에 맞는 4차선 신호등 상태
 LightState light_state[STATE_COUNT + 3][LIGHT_NUM] = {
-	//  A      B       C       D
+    //  A      B       C       D
     { LEFT,   RED,    LEFT,   RED    },
     { YELLOW, RED,    YELLOW, RED    },
     { GREEN,  RED,    GREEN,  RED    },
@@ -32,23 +32,23 @@ LightState light_state[STATE_COUNT + 3][LIGHT_NUM] = {
     { RED,    GREEN,  RED,    GREEN  },
     { RED,    YELLOW, RED,    YELLOW },
     { YELLOW, YELLOW, YELLOW, YELLOW },
-	{ RED,    RED,    RED,    RED    },
-	{ OFF,    OFF,    OFF,    OFF    }
+    { RED,    RED,    RED,    RED    },
+    { OFF,    OFF,    OFF,    OFF    }
 };
 
 //4차선 신호 변경
-void set_light_state(Intersection *ints, state_t state) {
-	ints->north.state = light_state[state][0];
-	ints->west.state = light_state[state][1];
-	ints->south.state = light_state[state][2];
-	ints->east.state = light_state[state][3];
+void set_light_state(Intersection* ints, state_t state) {
+    ints->north.state = light_state[state][0];
+    ints->west.state = light_state[state][1];
+    ints->south.state = light_state[state][2];
+    ints->east.state = light_state[state][3];
 }
 
 int main(void) {
-	//초기화
+    //초기화
     ULONGLONG last_tick = GetTickCount64();
     state_t cur_state = S0;
-    
+
     ULONGLONG wait_time = 4000;
     Intersection ints;
     set_light_state(&ints, cur_state);
@@ -57,12 +57,12 @@ int main(void) {
     state_t last_state = S0;
     char input = 0;
     bool emergency_flag = false;
-
-	//루프
-	while (1)
-	{
+    bool blink_flag = false;
+    //루프
+    while (1)
+    {
         ULONGLONG current_tick = GetTickCount64();
-        if (_kbhit()) 
+        if (_kbhit())
             input = _getch();
 
         if (input == 'b' || input == 'e' || input == 's')
@@ -71,9 +71,9 @@ int main(void) {
             {
             case 'b': //비상, 전체 RED 점멸 
                 if (!cur_state)  cur_state++;
-                last_state = cur_state -1;
-                cur_state = S8;     
-                emergency_flag = true;        
+                last_state = cur_state - 1;
+                cur_state = S8;
+                emergency_flag = true;
                 wait_time = 0;
                 input = 0;
                 break;
@@ -83,13 +83,15 @@ int main(void) {
                 last_state = cur_state - 1;
                 cur_state = S8;
                 emergency_flag = true;
+                blink_flag = true;
                 wait_time = 0;
                 input = 0;
                 break;
-             
+
             case 's': //끝
                 emergency_flag = false;
-				cur_state = last_state;
+                blink_flag = false;
+                cur_state = last_state;
                 wait_time = 0;
                 input = 0;
                 break;
@@ -117,7 +119,7 @@ int main(void) {
             refresh_intersection(&ints);
         }
 
-        if(emergency_flag && current_tick - last_tick >= wait_time)
+        if (emergency_flag && current_tick - last_tick >= wait_time)
         {
             last_tick = current_tick;
             switch (cur_state)
@@ -127,7 +129,10 @@ int main(void) {
                 set_light_state(&ints, cur_state);
                 refresh_intersection(&ints);
 
-                cur_state = S9;
+                if (!blink_flag)
+                    cur_state = S9;
+                else
+                    cur_state = S10;
                 wait_time = 600; //6s        
                 break;
             case S9:
@@ -136,9 +141,16 @@ int main(void) {
                 set_light_state(&ints, cur_state);
                 refresh_intersection(&ints);
                 break;
+
+            case S10:
+                set_light_state(&ints, cur_state);
+                refresh_intersection(&ints);
+                cur_state = S8;
+                wait_time = 600;
+                break;
             }
         }
-        
-	}
-	return 0;
+
+    }
+    return 0;
 }
