@@ -77,6 +77,15 @@ int main(void) {
                 wait_time = 0;
                 input = 0;
                 break;
+
+            case 'e':
+                if (!cur_state)  cur_state++;
+                last_state = cur_state - 1;
+                cur_state = S8;
+                emergency_flag = true;
+                wait_time = 0;
+                input = 0;
+                break;
              
             case 's': //끝
                 emergency_flag = false;
@@ -110,6 +119,7 @@ int main(void) {
 
         if(emergency_flag && current_tick - last_tick >= wait_time)
         {
+            last_tick = current_tick;
             switch (cur_state)
             {
             case S8:
@@ -118,7 +128,7 @@ int main(void) {
                 refresh_intersection(&ints);
 
                 cur_state = S9;
-                wait_time = 600; //6s           
+                wait_time = 600; //6s        
                 break;
             case S9:
                 wait_time = 1000000000;// 무한대기
