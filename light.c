@@ -1,4 +1,4 @@
-#include <stdio.h>
+ï»¿#include <stdio.h>
 
 typedef enum {
     GO_ST = 1, // green
@@ -8,10 +8,10 @@ typedef enum {
 } STATE;
 const char st_chr[5][30] = { // state to string function
     "",
-    " ¡Ü ¡Ü ¡ç \033[32m ¡Ü \033[0m",
-    " ¡Ü \033[33m ¡Ü \033[0m ¡ç ¡Ü",
-    "\033[31m ¡Ü \033[0m ¡Ü ¡ç ¡Ü",
-    " ¡Ü ¡Ü \033[32m ¡ç \033[0m ¡Ü"
+    " â— â— â† \033[32m â— \033[0m",
+    " â— \033[33m â— \033[0m â† â—",
+    "\033[31m â— \033[0m â— â† â—",
+    " â— â— \033[32m â† \033[0m â—"
 };
 
 // main light struct
